@@ -50,10 +50,11 @@ MonoBehaviour:
   coinPrefab: {fileID: 3157838024326582397, guid: 3fd87a58109de6c458f4505ef24a0cdd, type: 3}
   powerUpSpawnChance: 0.3
   coinSpawnChance: 0.5
+  coinSeparationLength: 2
   lanes:
-  - -2.5
+  - -3
   - 0
-  - 2.5
+  - 3
 --- !u!1 &5514097284212577922
 GameObject:
   m_ObjectHideFlags: 0
