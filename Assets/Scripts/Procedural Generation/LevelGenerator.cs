@@ -7,11 +7,20 @@ using UnityEngine;
 public class LevelGenerator : MonoBehaviour
 {
     // Unity Editor controllable
+    [Header("References")]
+    [SerializeField] CameraController cameraController;
     [SerializeField] GameObject chunkPrefab;
-    [SerializeField] int startingChunksAmount = 12;
     [SerializeField] Transform chunkParent;
+    [SerializeField] ScoreManager scoreManager;
+
+    [Header("Level Settings")]
+    [SerializeField] int startingChunksAmount = 12;
     [SerializeField] float chunkLength = 10f;
     [SerializeField] float moveSpeed = 8f;
+    [SerializeField] float minMoveSpeed = 2f;
+    [SerializeField] float maxMoveSpeed = 20f;
+    [SerializeField] float minGravityZ = -20f;
+    [SerializeField] float maxGravityZ = -2f;
 
     // Created this array initially to manage chunks, but replaced it with a list now which manages all enabled chunks.
     // GameObject[] chunks = new GameObject[12];
@@ -29,6 +38,24 @@ public class LevelGenerator : MonoBehaviour
         MoveChunks();
     }
 
+    public void ChangeChunkSpeed(float speedAmount)
+    {
+        float newMoveSpeed = moveSpeed + speedAmount;
+        newMoveSpeed = Mathf.Clamp(newMoveSpeed, minMoveSpeed, maxMoveSpeed);
+
+        if (newMoveSpeed != moveSpeed)
+        {
+            moveSpeed = newMoveSpeed;
+
+            float newGravityZ = Physics.gravity.z - speedAmount;
+            newGravityZ = Mathf.Clamp(newGravityZ, minGravityZ, maxGravityZ);
+
+            Physics.gravity = new Vector3(Physics.gravity.x, Physics.gravity.y, newGravityZ);
+
+            cameraController.ChangeCameraFOV(speedAmount);
+        }
+    }
+
     // Spawns the initial chunks to build the level
     void SpawnStartingChunk()
     {
@@ -44,11 +71,13 @@ public class LevelGenerator : MonoBehaviour
         // Gets the Z-position for the new chunk.
         float spawnPositionZ = CalculateSpawnPositionZ();
 
-        // Intantiate the chunk and adds it to the list,
+        // Instantiate the chunk and adds it to the list,
         Vector3 chunkSpawnPos = new Vector3(transform.position.x, transform.position.y, spawnPositionZ);
-        GameObject newChunk = Instantiate(chunkPrefab, chunkSpawnPos, Quaternion.identity, chunkParent);
+        GameObject newChunkGO = Instantiate(chunkPrefab, chunkSpawnPos, Quaternion.identity, chunkParent);
 
-        chunks.Add(newChunk);
+        chunks.Add(newChunkGO);
+        Chunk newChunk = newChunkGO.GetComponent<Chunk>();
+        newChunk.Init(this, scoreManager);
     }
 
     // Calculates the spawn position for the new chunk, places it after the destruction of a chunk.

@@ -2,9 +2,16 @@ using UnityEngine;
 
 public class Coin : Pickup
 {
+    [SerializeField] int scoreAmount = 100;
+    ScoreManager scoreManager;
+
+    public void Init(ScoreManager scoreManager)
+    {
+        this.scoreManager = scoreManager;
+    }
+
     protected override void OnPickup()
     {
-        // Collects coin and logs a message.
-        Debug.Log("Coin collected!");
+        scoreManager.IncreaseScore(scoreAmount);
     }
 }

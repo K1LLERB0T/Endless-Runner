@@ -2,9 +2,17 @@ using UnityEngine;
 
 public class PowerUp : Pickup
 {
+    [SerializeField] float adjustChangeMoveSpeedAmount = 3f;
+
+    LevelGenerator levelGenerator;
+
+    public void Init(LevelGenerator levelGenerator)
+    {
+        this.levelGenerator = levelGenerator;
+    }
+
     protected override void OnPickup()
     {
-        // Collects power-up and logs a message.
-        Debug.Log("Power Up!");
+        levelGenerator.ChangeChunkSpeed(adjustChangeMoveSpeedAmount);
     }
 }

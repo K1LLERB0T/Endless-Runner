@@ -21,6 +21,9 @@ public class Chunk : MonoBehaviour
     // Defining lane positions
     [SerializeField] float[] lanes = { -3f, 0f, 3f };
 
+    LevelGenerator levelGenerator;
+    ScoreManager scoreManager;
+
     // Create a list of available lanes
     List<int> availableLanes = new List<int> { 0, 1, 2 };
 
@@ -30,6 +33,12 @@ public class Chunk : MonoBehaviour
         SpawnFence();
         SpawnPowerUp();
         SpawnCoin();
+    }
+
+    public void Init(LevelGenerator levelGenerator, ScoreManager scoreManager)
+    {
+        this.levelGenerator = levelGenerator;
+        this.scoreManager = scoreManager;
     }
 
     // Spawn fences in random lanes without overlap
@@ -62,7 +71,8 @@ public class Chunk : MonoBehaviour
 
         // Calculate spawn position and instantiate PowerUp
         Vector3 spawnPosition = new Vector3(lanes[selectedLane], transform.position.y, transform.position.z);
-        Instantiate(powerUpPrefab, spawnPosition, Quaternion.identity, this.transform);
+        PowerUp newPowerUp = Instantiate(powerUpPrefab, spawnPosition, Quaternion.identity, this.transform).GetComponent<PowerUp>();
+        newPowerUp.Init(levelGenerator);
     }
 
     // Spawn coins in a random lane with separation
@@ -84,7 +94,8 @@ public class Chunk : MonoBehaviour
             // Calculate spawn position and instantiate Coin
             float spawnPositionZ = zPosOfChunk - (i * coinSeparationLength);
             Vector3 spawnPosition = new Vector3(lanes[selectedLane], transform.position.y, spawnPositionZ);
-            Instantiate(coinPrefab, spawnPosition, Quaternion.identity, this.transform);
+            Coin newCoin = Instantiate(coinPrefab, spawnPosition, Quaternion.identity, this.transform).GetComponent<Coin>();
+            newCoin.Init(scoreManager);
         }
     }
 

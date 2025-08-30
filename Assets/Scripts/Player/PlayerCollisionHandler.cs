@@ -10,11 +10,19 @@ public class PlayerCollisionHandler : MonoBehaviour
 
     // Delay between consecutive collisions
     [SerializeField] float collisionCooldown = 1f;
+    [SerializeField] float adjustChangeMoveSpeedAmount = -2f;
 
     // Animator trigger name
     const string hitString = "Stumble";
 
     float cooldownTimer = 0f;
+
+    LevelGenerator levelGenerator;
+
+    void Start()
+    {
+        levelGenerator = FindFirstObjectByType<LevelGenerator>();
+    }
 
     void Update()
     {
@@ -29,6 +37,7 @@ public class PlayerCollisionHandler : MonoBehaviour
             return;
 
         // Triggers "Stumble" animation
+        levelGenerator.ChangeChunkSpeed(adjustChangeMoveSpeedAmount);
         animator.SetTrigger(hitString);
         cooldownTimer = 0f;
     }
