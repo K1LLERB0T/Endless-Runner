@@ -9,12 +9,14 @@ public class LevelGenerator : MonoBehaviour
     // Unity Editor controllable
     [Header("References")]
     [SerializeField] CameraController cameraController;
-    [SerializeField] GameObject chunkPrefab;
+    [SerializeField] GameObject[] chunkPrefabs;
+    [SerializeField] GameObject checkPointChunkPrefab;
     [SerializeField] Transform chunkParent;
     [SerializeField] ScoreManager scoreManager;
 
     [Header("Level Settings")]
     [SerializeField] int startingChunksAmount = 12;
+    [SerializeField] int checkPointChunkInterval = 10;
     [SerializeField] float chunkLength = 10f;
     [SerializeField] float moveSpeed = 8f;
     [SerializeField] float minMoveSpeed = 2f;
@@ -25,6 +27,7 @@ public class LevelGenerator : MonoBehaviour
     // Created this array initially to manage chunks, but replaced it with a list now which manages all enabled chunks.
     // GameObject[] chunks = new GameObject[12];
     List<GameObject> chunks = new List<GameObject>();
+    int chunksSpawned = 0;
 
     // Starts the level by creating initial set of chunks
     void Start()
@@ -73,11 +76,29 @@ public class LevelGenerator : MonoBehaviour
 
         // Instantiate the chunk and adds it to the list,
         Vector3 chunkSpawnPos = new Vector3(transform.position.x, transform.position.y, spawnPositionZ);
-        GameObject newChunkGO = Instantiate(chunkPrefab, chunkSpawnPos, Quaternion.identity, chunkParent);
-
+        GameObject chunkToSpawn = ChooseChunkToSpawn();
+        GameObject newChunkGO = Instantiate(chunkToSpawn, chunkSpawnPos, Quaternion.identity, chunkParent);
         chunks.Add(newChunkGO);
         Chunk newChunk = newChunkGO.GetComponent<Chunk>();
         newChunk.Init(this, scoreManager);
+
+        chunksSpawned++;
+    }
+
+    private GameObject ChooseChunkToSpawn()
+    {
+        GameObject chunkToSpawn;
+
+        if (chunksSpawned % checkPointChunkInterval == 0 && chunksSpawned != 0)
+        {
+            chunkToSpawn = checkPointChunkPrefab;
+        }
+        else
+        {
+            chunkToSpawn = chunkPrefabs[Random.Range(0, chunkPrefabs.Length)];
+        }
+
+        return chunkToSpawn;
     }
 
     // Calculates the spawn position for the new chunk, places it after the destruction of a chunk.

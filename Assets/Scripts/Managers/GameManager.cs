@@ -21,12 +21,15 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        TimeSlowDown();
+        DecreaseTime();
     }
 
+    public void IncreaseTime(float amount)
+    {
+        timeLeft += amount;
+    }
 
-
-    private void TimeSlowDown()
+    void DecreaseTime()
     {
         if (gameOver)
             return;
