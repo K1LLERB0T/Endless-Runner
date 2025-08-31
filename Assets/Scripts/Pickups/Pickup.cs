@@ -8,8 +8,15 @@ public abstract class Pickup : MonoBehaviour
     // Collectible rotation speed
     [SerializeField] float rotationSpeed = 100f;
 
+    AudioSource audioSource;
+
     // Tag used to identify the player
     const string playerString = "Player";
+
+    void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
 
     // Rotates with each frame.
     void Update()
@@ -23,8 +30,14 @@ public abstract class Pickup : MonoBehaviour
         // Checks if player picked up the item and removes it.
         if (other.CompareTag(playerString))
         {
+            // Play pickup sound
+            if (audioSource != null)
+            {
+                audioSource.PlayOneShot(audioSource.clip);
+            }
+
             OnPickup();
-            Destroy(gameObject);
+            Destroy(gameObject, 0.5f);
         }
     }
 

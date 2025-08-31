@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 
+/// <summary>
+/// Controls Cinemachine camera's FOV and particle effects.
+/// </summary>
 public class CameraController : MonoBehaviour
 {
     [SerializeField] ParticleSystem powerUpParticleSystem;
@@ -17,6 +20,8 @@ public class CameraController : MonoBehaviour
     {
         cinemachineCamera = GetComponent<CinemachineCamera>();
     }
+
+    // Starts the FOV zoom and plays particles.
     public void ChangeCameraFOV(float speedAmount)
     {
         StopAllCoroutines();
@@ -28,6 +33,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    // Coroutine for a smooth FOV transition.
     IEnumerator ChangeFOVRoutine(float speedAmount)
     {
         float startFOV = cinemachineCamera.Lens.FieldOfView;

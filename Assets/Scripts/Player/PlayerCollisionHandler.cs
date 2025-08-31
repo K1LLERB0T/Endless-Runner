@@ -12,20 +12,26 @@ public class PlayerCollisionHandler : MonoBehaviour
     [SerializeField] float collisionCooldown = 1f;
     [SerializeField] float adjustChangeMoveSpeedAmount = -2f;
 
+
     // Animator trigger name
     const string hitString = "Stumble";
+
+    [SerializeField] AudioClip stumbleSFX;
 
     float cooldownTimer = 0f;
 
     LevelGenerator levelGenerator;
 
+
     void Start()
     {
+        // Finds and stores a reference to the LevelGenerator in the scene.
         levelGenerator = FindFirstObjectByType<LevelGenerator>();
     }
 
     void Update()
     {
+        // Increments the timer to track cooldown.
         cooldownTimer += Time.deltaTime;
     }
 
